@@ -2,25 +2,44 @@
 <html>
 <head>
     <title>Elektron Sensors</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .sensor { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 10px; }
+        .value { font-size: 2em; font-weight: bold; color: #2c5aa0; }
+    </style>
 </head>
 <body>
     <h1>🔌 Elektron - Мониторинг датчиков</h1>
-    <p>Сайт работает!</p>
     
-    <div id="status">Проверяем данные...</div>
+    <div class="sensor">
+        <h3>🌡️ Температура</h3>
+        <div class="value" id="temperature">-- °C</div>
+    </div>
     
+    <div class="sensor">
+        <h3>💧 Влажность</h3>
+        <div class="value" id="humidity">-- %</div>
+    </div>
+    
+    <div id="lastUpdate">Загрузка данных...</div>
+
     <script>
-        // Проверяем загрузку data.json
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('status').innerHTML = 
-                    '✅ Данные загружены: ' + data.temperature + '°C';
-            })
-            .catch(error => {
-                document.getElementById('status').innerHTML = 
-                    '❌ Ошибка загрузки данных';
-            });
+        async function loadData() {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                
+                document.getElementById('temperature').textContent = data.temperature + ' °C';
+                document.getElementById('humidity').textContent = data.humidity + ' %';
+                document.getElementById('lastUpdate').textContent = 'Обновлено: ' + new Date().toLocaleTimeString();
+            } catch (error) {
+                document.getElementById('lastUpdate').textContent = '❌ Ошибка загрузки данных';
+            }
+        }
+        
+        // Загружаем данные сразу и каждые 30 секунд
+        loadData();
+        setInterval(loadData, 30000);
     </script>
 </body>
 </html>
