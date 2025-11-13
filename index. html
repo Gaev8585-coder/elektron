@@ -1,11 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Датчики температуры</title>
+    <title>Elektron Sensors</title>
 </head>
 <body>
-    <h1>🚀 Sensor Data API</h1>
-    <p>Скоро здесь будет интерфейс для датчиков!</p>
-    <p><a href="data.json">Посмотреть данные</a></p>
+    <h1>🔌 Elektron - Мониторинг датчиков</h1>
+    <p>Проверка работы:</p>
+    <ul>
+        <li><a href="data.json">data.json</a> - данные датчиков</li>
+    </ul>
+    
+    <div id="status"></div>
+    
+    <script>
+        fetch('data.json')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('status').innerHTML = 
+                    '✅ Данные: ' + data.temperature + '°C, ' + data.humidity + '%';
+            })
+            .catch(e => {
+                document.getElementById('status').innerHTML = '❌ Ошибка: ' + e;
+            });
+    </script>
 </body>
 </html>
