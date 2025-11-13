@@ -5,22 +5,21 @@
 </head>
 <body>
     <h1>🔌 Elektron - Мониторинг датчиков</h1>
-    <p>Проверка работы:</p>
-    <ul>
-        <li><a href="data.json">data.json</a> - данные датчиков</li>
-    </ul>
+    <p>Сайт работает!</p>
     
-    <div id="status"></div>
+    <div id="status">Проверяем данные...</div>
     
     <script>
+        // Проверяем загрузку data.json
         fetch('data.json')
-            .then(r => r.json())
+            .then(response => response.json())
             .then(data => {
                 document.getElementById('status').innerHTML = 
-                    '✅ Данные: ' + data.temperature + '°C, ' + data.humidity + '%';
+                    '✅ Данные загружены: ' + data.temperature + '°C';
             })
-            .catch(e => {
-                document.getElementById('status').innerHTML = '❌ Ошибка: ' + e;
+            .catch(error => {
+                document.getElementById('status').innerHTML = 
+                    '❌ Ошибка загрузки данных';
             });
     </script>
 </body>
