@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Тест Elektron</title>
+</head>
+<body>
+    <h1>🚀 Тест работает!</h1>
+    <p>Если вы видите этот текст, значит HTML обрабатывается</p>
+    <div id="data">Загрузка данных...</div>
+    
+    <script>
+        // Простая проверка загрузки данных
+        fetch('https://raw.githubusercontent.com/gaev8585-coder/elektron/main/docs/data.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('data').innerHTML = 
+                    'Температура: ' + data.temperature + '°C<br>' +
+                    'Влажность: ' + data.humidity + '%';
+            })
+            .catch(error => {
+                document.getElementById('data').innerHTML = 'Ошибка: ' + error;
+            });
+    </script>
+</body>
+</html>
