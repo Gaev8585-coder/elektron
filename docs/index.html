@@ -318,7 +318,7 @@
                 hideError();
                 
                 // Используем RAW ссылку которая работает
-                const response = await fetch('https://raw.githubusercontent.com/gaev8585-coder/elektron/main/docs/data.json?t=' + Date.now());
+                const response = await fetch('data.json');
                 
                 if (!response.ok) {
                     throw new Error('Ошибка сети');
