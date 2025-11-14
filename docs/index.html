@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elektron Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .sensor-value {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Elektron Monitor</h1>
+        <p>Мониторинг датчиков в реальном времени</p>
+        
+        <div class="sensor">
+            <h3>🌡️ Температура</h3>
+            <div class="sensor-value" id="temperature">-- °C</div>
+        </div>
+        
+        <div class="sensor">
+            <h3>💧 Влажность</h3>
+            <div class="sensor-value" id="humidity">-- %</div>
+        </div>
+        
+        <div id="lastUpdate">Загрузка данных...</div>
+    </div>
+
+    <script>
+        async function loadSensorData() {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                
+                document.getElementById('temperature').textContent = data.temperature + ' °C';
+                document.getElementById('humidity').textContent = data.humidity + ' %';
+                document.getElementById('lastUpdate').textContent = 'Обновлено: ' + new Date().toLocaleTimeString();
+            } catch (error) {
+                document.getElementById('lastUpdate').textContent = '❌ Ошибка загрузки данных';
+            }
+        }
+        
+        loadSensorData();
+        setInterval(loadSensorData, 30000);
+    </script>
+</body>
+</html>
