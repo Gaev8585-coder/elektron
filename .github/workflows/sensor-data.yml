@@ -5,7 +5,6 @@ on:
   repository_dispatch:
     types: [sensor-data]
 
-# ✅ ДАЕМ РАЗРЕШЕНИЯ НА ЗАПИСЬ
 permissions:
   contents: write
 
@@ -17,31 +16,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # ✅ ИСПОЛЬЗУЕМ ТОКЕН С ПРАВАМИ
           token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Debug received data
-        run: |
-          echo "📊 Получены данные:"
-          echo '${{ toJson(github.event.client_payload) }}'
           
       - name: Update data.json
         run: |
-          # Создаем обновленный data.json
-          cat > docs/data.json << 'EOF'
-          {
-            "temperature": ${{ github.event.client_payload.temperature || 23.5 }},
-            "humidity": ${{ github.event.client_payload.humidity || 45.0 }},
-            "voltage": ${{ github.event.client_payload.voltage || 12.34 }},
-            "lastUpdate": "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")",
+          echo '{
+            "temperature": 25.5,
+            "humidity": 60.0,
+            "voltage": 12.5,
+            "lastUpdate": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
             "status": "success"
-          }
-          EOF
-          
-      - name: Show updated file
-        run: |
-          echo "📄 Содержимое data.json:"
-          cat docs/data.json
+          }' > docs/data.json
           
       - name: Commit and push changes
         run: |
