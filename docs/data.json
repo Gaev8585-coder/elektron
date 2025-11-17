@@ -1,9 +1,7 @@
-- name: Update data.json
-  run: |
-    echo '{
-      "temperature": 25.5,
-      "humidity": 60.0, 
-      "voltage": 12.5,
-      "lastUpdate": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
-      "status": "success"
-    }' > docs/data.json
+{
+  "temperature": 23.5,
+  "humidity": 45,
+  "voltage": 12.34,
+  "lastUpdate": "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")",
+  "status": "success"
+}
