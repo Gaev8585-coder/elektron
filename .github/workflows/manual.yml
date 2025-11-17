@@ -1,48 +1,46 @@
 name: Manual Data Update
 
 on:
-  # Разрешает ручной запуск через кнопку в интерфейсе GitHub
   workflow_dispatch:
-    # Опционально: можно добавить входные параметры
     inputs:
-      logLevel:
-        description: 'Уровень логирования'
+      temperature:
+        description: 'Температура'
         required: true
-        default: 'warning'
-      environment:
-        description: 'Окружение'
-        required: false
-        default: 'staging'
+        default: '22.9'
+      humidity:
+        description: 'Влажность'
+        required: true  
+        default: '40.2'
+      voltage:
+        description: 'Напряжение'
+        required: true
+        default: '12.34'
+
+permissions:
+  contents: write
 
 jobs:
-  update-sensor-data:
+  update:
     runs-on: ubuntu-latest
     steps:
-      # Шаг 1: Получает код вашего репозитория
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      # Шаг 2: Обновляет данные (замените на вашу реальную логику)
-      - name: Update data.json
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Update data
         run: |
-          # Здесь пример логики обновления. Вы можете заменить ее на свою.
           echo '{
-            "temperature": 23.5,
-            "humidity": 45.0,
-            "voltage": 12.34,
+            "temperature": ${{ github.event.inputs.temperature }},
+            "humidity": ${{ github.event.inputs.humidity }},
+            "voltage": ${{ github.event.inputs.voltage }},
             "lastUpdate": "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")",
-            "status": "manual-update"
+            "status": "success"
           }' > docs/data.json
           
-      # Шаг 3: Показывает обновленное содержимое файла (для диагностики)
-      - name: Show updated file content
-        run: cat docs/data.json
-        
-      # Шаг 4: Фиксирует изменения и отправляет их в репозиторий
-      - name: Commit and push changes
+      - name: Commit
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add docs/data.json
-          git commit -m "🤖 Manual update: Sensor data refreshed via workflow_dispatch"
+          git commit -m "🤖 Ручное обновление: ${{ github.event.inputs.temperature }}°C"
           git push
