@@ -1,4 +1,4 @@
-name: Update Sensor Data
+name: Sensor Data Update
 
 on:
   repository_dispatch:
@@ -8,38 +8,22 @@ jobs:
   update-data:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Debug received data
+      - uses: actions/checkout@v4
+      
+      - name: Update JSON file
         run: |
-          echo "📊 Получены данные:"
-          echo '${{ toJson(github.event.client_payload) }}'
-          
-      - name: Create updated data.json
-        run: |
-          # Создаем правильный JSON с полными именами полей
-          cat > docs/data.json << EOF
-          {
-            "temperature": ${{ github.event.client_payload.temperature }},
+          echo '{ 
+            "temperature": ${{ github.event.client_payload.temperature }}, 
             "humidity": ${{ github.event.client_payload.humidity }},
             "voltage": ${{ github.event.client_payload.voltage }},
-            "lastUpdate": "${{ github.event.client_payload.timestamp }}",
-            "status": "success"
-          }
-          EOF
+            "lastUpdate": "2024-01-15T00:00:00Z",
+            "status": "success" 
+          }' > docs/data.json
           
-      - name: Show created file
+      - name: Commit changes
         run: |
-          echo "📄 Содержимое data.json:"
-          cat docs/data.json
-          
-      - name: Commit and push changes
-        run: |
-          git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add docs/data.json
-          git commit -m "🤖 Auto-update: ${{ github.event.client_payload.temperature }}°C, ${{ github.event.client_payload.humidity }}%"
+          git commit -m "Update sensor data"
           git push
