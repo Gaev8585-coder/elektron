@@ -1,19 +1,25 @@
 name: Update Sensor Data
 
 on:
-  # Разрешаем ручной запуск
   workflow_dispatch:
-  # И запуск через API от ESP8266
   repository_dispatch:
     types: [sensor-data]
+
+# ✅ ДАЕМ РАЗРЕШЕНИЯ НА ЗАПИСЬ
+permissions:
+  contents: write
 
 jobs:
   update-sensor-data:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+        with:
+          # ✅ ИСПОЛЬЗУЕМ ТОКЕН С ПРАВАМИ
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Debug received data
         run: |
           echo "📊 Получены данные:"
@@ -42,5 +48,5 @@ jobs:
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
           git add docs/data.json
-          git commit -m "🤖 Auto-update sensor data" || exit 0
+          git commit -m "🤖 Auto-update sensor data"
           git push
