@@ -1,13 +1,23 @@
 name: Update Sensor Data
-on: [workflow_dispatch, repository_dispatch]
-permissions: [contents: write]
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [sensor-data]
+
+# ✅ ДАЕМ РАЗРЕШЕНИЯ НА ЗАПИСЬ
+permissions:
+  contents: write
+
 jobs:
   update-sensor-data:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # ✅ ИСПОЛЬЗУЕМ ТОКЕН С ПРАВАМИ
           token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Debug received data
@@ -25,10 +35,12 @@ jobs:
             "status": "success"
           }' > docs/data.json
           
-      - name: Show updated file          # ← ДИАГНОСТИКА
-        run: cat docs/data.json
+      - name: Show updated file
+        run: |
+          echo "📄 Содержимое data.json:"
+          cat docs/data.json
           
-      - name: Commit and push changes    # ← СОХРАНЕНИЕ
+      - name: Commit and push changes
         run: |
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
