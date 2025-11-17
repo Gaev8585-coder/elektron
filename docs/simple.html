@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <h1>Тест данных</h1>
+    <div id="data">Загрузка...</div>
+    
+    <script>
+        fetch('https://raw.githubusercontent.com/gaev8585-coder/elektron/main/docs/data.json')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('data').innerHTML = 
+                    'Температура: ' + data.temperature + '°C<br>' +
+                    'Влажность: ' + data.humidity + '%<br>' +
+                    'Напряжение: ' + data.voltage + 'V';
+            })
+            .catch(err => {
+                document.getElementById('data').innerHTML = 'Ошибка: ' + err;
+            });
+    </script>
+</body>
+</html>
