@@ -18,20 +18,39 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Update data.json
+      - name: Debug received data
         run: |
-          echo '{
-            "temperature": 25.5,
-            "humidity": 60.0,
-            "voltage": 12.5,
-            "lastUpdate": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
+          echo "=== ДАННЫЕ ОТ ESP8266 ==="
+          echo "Температура: ${{ github.event.client_payload.temperature }}"
+          echo "Влажность: ${{ github.event.client_payload.humidity }}"
+          echo "Напряжение: ${{ github.event.client_payload.voltage }}"
+          echo "Event type: ${{ github.event_name }}"
+          echo "========================="
+          
+      - name: Update data.json with sensor data
+        run: |
+          # Создаем data.json с реальными данными от датчиков
+          cat > docs/data.json << EOF
+          {
+            "temperature": ${{ github.event.client_payload.temperature }},
+            "humidity": ${{ github.event.client_payload.humidity }},
+            "voltage": ${{ github.event.client_payload.voltage }},
+            "lastUpdate": "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")",
             "status": "success"
-          }' > docs/data.json
+          }
+          EOF
+          
+      - name: Show updated file content
+        run: |
+          echo "📄 Содержимое data.json:"
+          cat docs/data.json
+          echo ""
+          echo "✅ Данные от датчиков записаны в файл"
           
       - name: Commit and push changes
         run: |
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
           git add docs/data.json
-          git commit -m "🤖 Auto-update sensor data"
+          git commit -m "🤖 Данные с датчиков: ${{ github.event.client_payload.temperature }}°C, ${{ github.event.client_payload.humidity }}%, ${{ github.event.client_payload.voltage }}V"
           git push
