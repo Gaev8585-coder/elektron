@@ -1,19 +1,24 @@
-<script>
-    async function loadSensorData() {
-        try {
-            const response = await fetch('https://raw.githubusercontent.com/gaev8585-coder/elektron/main/docs/data.json');
-            const data = await response.json();
-            
-            document.getElementById('temperature').textContent = data.temperature + '°C';
-            document.getElementById('humidity').textContent = data.humidity + '%';
-            document.getElementById('voltage').textContent = data.voltage + 'V';
-            document.getElementById('lastUpdate').textContent = 'Обновлено: ' + new Date().toLocaleTimeString();
-            
-        } catch (error) {
-            document.getElementById('lastUpdate').textContent = 'Ошибка: ' + error.message;
+const response = await fetch('https://raw.githubusercontent.com/gaev8585-coder/elektron/main/docs/data.json?t=' + Date.now());
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка сети: ' + response.status);
+                }
+                
+                const data = await response.json();
+                updateSensorDisplay(data);
+                
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                showError('Ошибка загрузки: ' + error.message);
+            }
         }
-    }
-    
-    loadSensorData();
-    setInterval(loadSensorData, 30000);
-</script>
+
+        // Ждем загрузки DOM перед запуском
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("🚀 Страница загружена, запускаем мониторинг...");
+            loadSensorData();
+            setInterval(loadSensorData, 30000);
+        });
+    </script>
+</body>
+</html>
