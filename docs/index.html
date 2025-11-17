@@ -358,21 +358,28 @@
     }
 }
         
-        // Обновление отображения данных
         function updateSensorDisplay(data) {
-            // Температура
-            const tempElement = document.getElementById('temperature');
-            const tempValue = data.temperature || 0;
-            tempElement.textContent = tempValue.toFixed(1) + '°C';
-            
-            // Цвет температуры в зависимости от значения
-            if (tempValue > 30) {
-                tempElement.className = 'sensor-value temperature-danger';
-            } else if (tempValue > 25) {
-                tempElement.className = 'sensor-value temperature-warning';
-            } else {
-                tempElement.className = 'sensor-value temperature-normal';
-                }
+    console.log("📊 Данные получены:", data);
+    
+    // Температура
+    const tempElement = document.getElementById('temperature');
+    tempElement.textContent = data.temperature + '°C';
+    
+    // Влажность
+    const humidityElement = document.getElementById('humidity');
+    humidityElement.textContent = data.humidity + '%';
+    
+    // Напряжение
+    const voltageElement = document.getElementById('voltage');
+    voltageElement.textContent = data.voltage + 'V';
+    
+    // Время обновления + отладочная информация
+    const lastUpdateElement = document.getElementById('lastUpdate');
+    lastUpdateElement.innerHTML = 'Обновлено: ' + new Date().toLocaleTimeString() + 
+                                 '<br>Данные: ' + data.temperature + '°C, ' + data.humidity + '%, ' + data.voltage + 'V';
+    
+    console.log("🔄 Интерфейс обновлен");
+}
             
             // Влажность
             const humidityElement = document.getElementById('humidity');
