@@ -335,26 +335,27 @@
             }
         }
         
-       async function loadSensorData() {
+      async function loadSensorData() {
     try {
-        // Используем официальный GitHub API для получения данных
-        const response = await fetch('https://api.github.com/repos/gaev8585-coder/elektron/contents/docs/data.json');
+        // Используем прямую ссылку на GitHub + параметр против кеша
+        const response = await fetch('https://raw.githubusercontent.com/gaev8585-coder/elektron/main/docs/data.json?t=' + Date.now());
         
         if (!response.ok) {
             throw new Error('Ошибка сети: ' + response.status);
         }
         
         const data = await response.json();
-        
-        // Данные от API приходят в кодировке base64, их нужно раскодировать
-        const decodedData = JSON.parse(atob(data.content));
+        console.log("📊 Данные получены:", data);
         
         // Обновляем интерфейс
-        updateSensorDisplay(decodedData);
+        updateSensorDisplay(data);
         
     } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
+        console.error('Ошибка загрузки:', error);
         showError('Ошибка соединения с датчиками');
+        
+        // Показываем последние известные данные
+        document.getElementById('lastUpdate').textContent = 'Ошибка: ' + error.message;
     }
 }
         
