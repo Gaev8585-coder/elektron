@@ -1,7 +1,7 @@
-{ 
-  "temperature": 22.9, 
+{
+  "temperature": 22.9,
   "humidity": 40.2,
   "voltage": 12.34,
-  "lastUpdate": "$(date -Iseconds)",
-  "status": "success" 
+  "lastUpdate": "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")",
+  "status": "success"
 }
