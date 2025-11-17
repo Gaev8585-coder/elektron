@@ -1,7 +1,7 @@
 {
-  "temperature": 23.5,
-  "humidity": 45,
-  "voltage": 12.34,
-  "lastUpdate": "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")",
+  "temperature": 25.5,
+  "humidity": 60.0,
+  "voltage": 12.5,
+  "lastUpdate": "2025-11-17T07:45:54.638Z",
   "status": "success"
 }
