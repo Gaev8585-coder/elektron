@@ -29,12 +29,12 @@ jobs:
           
       - name: Update data.json with sensor data
         run: |
-          # Создаем data.json с реальными данными от датчиков
-          cat > docs/data.json << EOF
+          # Используем данные от ESP8266 или значения по умолчанию
+          cat > docs/data.json << 'EOF'
           {
-            "temperature": ${{ github.event.client_payload.temperature }},
-            "humidity": ${{ github.event.client_payload.humidity }},
-            "voltage": ${{ github.event.client_payload.voltage }},
+            "temperature": ${{ github.event.client_payload.temperature || 0 }},
+            "humidity": ${{ github.event.client_payload.humidity || 0 }},
+            "voltage": ${{ github.event.client_payload.voltage || 0 }},
             "lastUpdate": "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")",
             "status": "success"
           }
@@ -52,5 +52,5 @@ jobs:
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
           git add docs/data.json
-          git commit -m "🤖 Данные с датчиков: ${{ github.event.client_payload.temperature }}°C, ${{ github.event.client_payload.humidity }}%, ${{ github.event.client_payload.voltage }}V"
+          git commit -m "🤖 Данные с датчиков: ${{ github.event.client_payload.temperature  0 }}°C, ${{ github.event.client_payload.humidity  0 }}%, ${{ github.event.client_payload.voltage || 0 }}V"
           git push
