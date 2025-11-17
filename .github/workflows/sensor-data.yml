@@ -30,11 +30,11 @@ jobs:
           # Создаем обновленный data.json
           cat > docs/data.json << 'EOF'
           {
-            "temperature": ${{ github.event.client_payload.temperature || 23.5 }},
-            "humidity": ${{ github.event.client_payload.humidity || 45.0 }},
-            "voltage": ${{ github.event.client_payload.voltage || 12.34 }},
-            "lastUpdate": "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")",
-            "status": "success"
+             "temperature": ${{ github.event.client_payload.temperature || 23.5 }},
+      "humidity": ${{ github.event.client_payload.humidity || 45.0 }},
+      "voltage": ${{ github.event.client_payload.voltage || 12.34 }},
+      "lastUpdate": "$CURRENT_DATE",
+      "status": "success"
           }
           EOF
           
