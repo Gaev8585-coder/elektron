@@ -9,7 +9,7 @@ on:
         default: '22.9'
       humidity:
         description: 'Влажность'
-        required: true  
+        required: true
         default: '40.2'
       voltage:
         description: 'Напряжение'
@@ -23,24 +23,36 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Update data
+      - name: Update data file
         run: |
-          echo '{
+          # Получаем текущую дату в правильном формате
+          CURRENT_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          
+          # Создаем правильный JSON файл
+          cat > docs/data.json << EOF
+          {
             "temperature": ${{ github.event.inputs.temperature }},
             "humidity": ${{ github.event.inputs.humidity }},
             "voltage": ${{ github.event.inputs.voltage }},
-            "lastUpdate": "$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")",
+            "lastUpdate": "$CURRENT_DATE",
             "status": "success"
-          }' > docs/data.json
+          }
+          EOF
           
-      - name: Commit
+      - name: Show created file
+        run: |
+          echo "📄 Содержимое data.json:"
+          cat docs/data.json
+          
+      - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add docs/data.json
-          git commit -m "🤖 Ручное обновление: ${{ github.event.inputs.temperature }}°C"
+          git commit -m "🤖 Ручное обновление: ${{ github.event.inputs.temperature }}°C, ${{ github.event.inputs.humidity }}%, ${{ github.event.inputs.voltage }}V"
           git push
