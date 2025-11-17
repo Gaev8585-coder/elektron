@@ -1,23 +1,13 @@
 name: Update Sensor Data
-
-on:
-  workflow_dispatch:
-  repository_dispatch:
-    types: [sensor-data]
-
-# ✅ ДАЕМ РАЗРЕШЕНИЯ НА ЗАПИСЬ
-permissions:
-  contents: write
-
+on: [workflow_dispatch, repository_dispatch]
+permissions: [contents: write]
 jobs:
   update-sensor-data:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # ✅ ИСПОЛЬЗУЕМ ТОКЕН С ПРАВАМИ
           token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Debug received data
@@ -25,25 +15,20 @@ jobs:
           echo "📊 Получены данные:"
           echo '${{ toJson(github.event.client_payload) }}'
           
-      - name: Update data.json
+      - name: Update data.json           # ← ВАШ НОВЫЙ КОД
         run: |
-          # Создаем обновленный data.json
-          cat > docs/data.json << 'EOF'
-          {
-             "temperature": ${{ github.event.client_payload.temperature || 23.5 }},
-      "humidity": ${{ github.event.client_payload.humidity || 45.0 }},
-      "voltage": ${{ github.event.client_payload.voltage || 12.34 }},
-      "lastUpdate": "$CURRENT_DATE",
-      "status": "success"
-          }
-          EOF
+          echo '{
+            "temperature": ${{ github.event.client_payload.temperature || 23.5 }},
+            "humidity": ${{ github.event.client_payload.humidity || 45.0 }},
+            "voltage": ${{ github.event.client_payload.voltage || 12.34 }},
+            "lastUpdate": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
+            "status": "success"
+          }' > docs/data.json
           
-      - name: Show updated file
-        run: |
-          echo "📄 Содержимое data.json:"
-          cat docs/data.json
+      - name: Show updated file          # ← ДИАГНОСТИКА
+        run: cat docs/data.json
           
-      - name: Commit and push changes
+      - name: Commit and push changes    # ← СОХРАНЕНИЕ
         run: |
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
