@@ -1,0 +1,29 @@
+name: Sensor Data Update
+
+on:
+  repository_dispatch:
+    types: [sensor-data]
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Update JSON file
+        run: |
+          echo '{ 
+            "temperature": ${{ github.event.client_payload.temperature }}, 
+            "humidity": ${{ github.event.client_payload.humidity }},
+            "voltage": ${{ github.event.client_payload.voltage }},
+            "lastUpdate": "2024-01-15T00:00:00Z",
+            "status": "success" 
+          }' > docs/data.json
+          
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/data.json
+          git commit -m "Update sensor data"
+          git push
