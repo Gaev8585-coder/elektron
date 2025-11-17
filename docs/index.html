@@ -335,9 +335,9 @@
             }
         }
         
-      async function loadSensorData() {
+    async function loadSensorData() {
     try {
-        // Используем прямую ссылку на GitHub + параметр против кеша
+        // Используем прямую ссылку на GitHub
         const response = await fetch('https://raw.githubusercontent.com/gaev8585-coder/elektron/main/docs/data.json?t=' + Date.now());
         
         if (!response.ok) {
@@ -353,9 +353,6 @@
     } catch (error) {
         console.error('Ошибка загрузки:', error);
         showError('Ошибка соединения с датчиками');
-        
-        // Показываем последние известные данные
-        document.getElementById('lastUpdate').textContent = 'Ошибка: ' + error.message;
     }
 }
         
