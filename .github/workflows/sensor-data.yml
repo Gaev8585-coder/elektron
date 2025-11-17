@@ -25,12 +25,12 @@ jobs:
           echo "📊 Получены данные:"
           echo '${{ toJson(github.event.client_payload) }}'
           
-     - name: Update data.json
+    - name: Update data.json
   run: |
     echo '{
-      "temperature": ${{ github.event.client_payload.temperature || 23.5 }},
-      "humidity": ${{ github.event.client_payload.humidity || 45.0 }},
-      "voltage": ${{ github.event.client_payload.voltage || 12.34 }},
+      "temperature": 25.5,
+      "humidity": 60.0, 
+      "voltage": 12.5,
       "lastUpdate": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
       "status": "success"
     }' > docs/data.json
