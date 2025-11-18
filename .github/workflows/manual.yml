@@ -1,26 +1,14 @@
-name: Manual Data Update
+name: Sensor Data Update
 
 on:
   repository_dispatch:
-    inputs:
-      temperature:
-        description: 'Температура'
-        required: true
-        default: '22.9'
-      humidity:
-        description: 'Влажность'
-        required: true
-        default: '40.2'
-      voltage:
-        description: 'Напряжение'
-        required: true
-        default: '12.34'
+    types: [sensor-data]
 
 permissions:
   contents: write
 
 jobs:
-  update:
+  update-data:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -28,31 +16,27 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
+      - name: Debug received data
+        run: |
+          echo "=== ДАННЫЕ ОТ ESP8266 ==="
+          echo '${{ toJson(github.event.client_payload) }}'
+          echo "=========================="
+      
       - name: Update data file
         run: |
-          # Получаем текущую дату в правильном формате
           CURRENT_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-          
-          # Создаем правильный JSON файл
-          cat > docs/data.json << EOF
-          {
-            "temperature": ${{ github.event.inputs.temperature }},
-            "humidity": ${{ github.event.inputs.humidity }},
-            "voltage": ${{ github.event.inputs.voltage }},
-            "lastUpdate": "$CURRENT_DATE",
+          echo '{
+            "temperature": ${{ github.event.client_payload.temperature }},
+            "humidity": ${{ github.event.client_payload.humidity }},
+            "voltage": ${{ github.event.client_payload.voltage }},
+            "lastUpdate": "'$CURRENT_DATE'",
             "status": "success"
-          }
-          EOF
+          }' > docs/data.json
           
-      - name: Show created file
-        run: |
-          echo "📄 Содержимое data.json:"
-          cat docs/data.json
-          
-      - name: Commit and push changes
+      - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add docs/data.json
-          git commit -m "🤖 Ручное обновление: ${{ github.event.inputs.temperature }}°C, ${{ github.event.inputs.humidity }}%, ${{ github.event.inputs.voltage }}V"
+          git commit -m "🤖 Данные с датчиков: ${{ github.event.client_payload.temperature }}°C, ${{ github.event.client_payload.humidity }}%, ${{ github.event.client_payload.voltage }}V"
           git push
