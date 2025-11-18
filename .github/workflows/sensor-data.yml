@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 jobs:
-  update-data:
+  update:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,21 +16,23 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Debug step
+      - name: Update data file
         run: |
-          echo "✅ Workflow запущен"
-          echo "Данные от ESP8266:"
-          echo '${{ toJson(github.event.client_payload) }}'
-      
-      - name: Simple update
-        run: |
-          # Простое обновление для теста
-          echo '{"temperature": 19.9, "humidity": 42.9, "voltage": 3.95, "status": "success"}' > docs/data.json
+          CURRENT_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          cat > docs/data.json << EOF
+          {
+            "temperature": ${{ github.event.client_payload.temperature || 22.9 }},
+            "humidity": ${{ github.event.client_payload.humidity || 40.2 }},
+            "voltage": ${{ github.event.client_payload.voltage || 12.34 }},
+            "lastUpdate": "$CURRENT_DATE",
+            "status": "success"
+          }
+          EOF
           
-      - name: Commit changes
+      - name: Commit and push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add docs/data.json
-          git commit -m "🤖 Авто-обновление от ESP8266"
+          git commit -m "🤖 Данные с датчиков: ${{ github.event.client_payload.temperature || 22.9 }}°C"
           git push
