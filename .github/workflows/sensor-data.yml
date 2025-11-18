@@ -1,7 +1,6 @@
 name: Sensor Data Update
 
 on:
-  workflow_dispatch:
   repository_dispatch:
     types: [sensor-data]
 
@@ -12,24 +11,26 @@ jobs:
   update-data:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Update data file
+      - name: Debug step
         run: |
-          echo '{ 
-            "temperature": ${{ github.event.client_payload.temperature || 22.9 }}, 
-            "humidity": ${{ github.event.client_payload.humidity || 40.2 }},
-            "voltage": ${{ github.event.client_payload.voltage || 12.34 }},
-            "lastUpdate": "$(date -Iseconds)",
-            "status": "success" 
-          }' > docs/data.json
+          echo "✅ Workflow запущен"
+          echo "Данные от ESP8266:"
+          echo '${{ toJson(github.event.client_payload) }}'
+      
+      - name: Simple update
+        run: |
+          # Простое обновление для теста
+          echo '{"temperature": 19.9, "humidity": 42.9, "voltage": 3.95, "status": "success"}' > docs/data.json
           
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add docs/data.json
-          git commit -m "Update sensor data"
+          git commit -m "🤖 Авто-обновление от ESP8266"
           git push
