@@ -1,0 +1,18 @@
+name: Debug Repository Dispatch
+
+on:
+  repository_dispatch:
+    types: [sensor-data]
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show received data
+        run: |
+          echo "🎯 Repository Dispatch получен!"
+          echo "Event type: ${{ github.event.action }}"
+          echo "Full event data:"
+          echo '${{ toJson(github.event) }}'
+          echo "Client payload:"
+          echo '${{ toJson(github.event.client_payload) }}'
