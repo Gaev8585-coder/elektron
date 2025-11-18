@@ -1,7 +1,7 @@
 name: Manual Data Update
 
 on:
-  workflow_dispatch:
+  repository_dispatch:
     inputs:
       temperature:
         description: 'Температура'
