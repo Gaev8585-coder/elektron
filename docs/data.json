@@ -1,7 +1,7 @@
 {
   "temperature": 12,
-  "humidity": 57.5,
+  "humidity": 57.1,
   "voltage": 12.47,
-  "lastUpdate": "2025-11-20T21:52:48.764Z",
+  "lastUpdate": "2025-11-20T21:53:22.746Z",
   "status": "success"
 }
